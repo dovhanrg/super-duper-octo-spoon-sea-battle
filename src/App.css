@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+.fieldsContainer {
+  display: flex;
+}
+
+.field {
+  /*border: 1px solid black;*/
+  width: 100%;
+  max-width: 370px;
+  display: flex;
+  flex-wrap: wrap;
+  /*max-height: 500px;*/
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.cell {
+  border: 1px solid black;
+  width: 30px;
+  height: 30px;
+}
+
+.occupied-cell {
+  background: black;
+}
