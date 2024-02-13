@@ -12,7 +12,7 @@ function App() {
       </header>
       <div className="fieldsContainer">
           <Field />
-          <Field />
+          {/*<Field />*/}
       </div>
     </div>
   );

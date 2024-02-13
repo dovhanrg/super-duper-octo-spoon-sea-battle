@@ -1,24 +1,25 @@
 import React, {useCallback} from "react";
 import classNames from "classnames";
+import {Coordinates} from "./Field";
 
 
 type Props = {
-    // onClick: (cellIndex:  number) => void;
+    onClick: (coordinates: {x: number, y: number}) => void;
     isOccupied?: boolean;
-    // cellIndex: number;
+    coordinates: Coordinates,
 }
 export default function Cell(
     {
-        // onClick,
+        onClick,
         isOccupied,
-        // cellIndex
+        coordinates,
     }: Props
 ) {
-    // const handleClick = useCallback(() => {
-    //     onClick(cellIndex);
-    // }, [cellIndex]);
+    const handleClick = useCallback(() => {
+        onClick(coordinates);
+    }, [onClick, coordinates]);
     return (<div
         className={classNames('cell', {'occupied-cell': isOccupied})}
-        // onClick={handleClick}
+        onClick={handleClick}
     />);
 }
