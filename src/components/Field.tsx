@@ -37,7 +37,6 @@ const checkOppositeCells = (
     const downY = coordinates.y + 1;
     const leftX = coordinates.x - 1;
     const topY = coordinates.y - 1;
-    console.log(coordinates);
     if (rightX <= SEA_BATTLE_FIELD_LENGTH && downY <= SEA_BATTLE_FIELD_LENGTH) {
         if (`${rightX}${downY}` in reservedCells) return false;
     }
