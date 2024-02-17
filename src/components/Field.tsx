@@ -1,23 +1,15 @@
 import Cell from "./Cell";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const SEA_BATTLE_FIELD_LENGTH = 10;
 const TOP_AND_LEFT_COORD_BORDER = 0;
 
-type ShipType = "OneDeck" | "TwoDeck" | "ThreeDeck" | "FourDeck";
-type ShipNumberType = Record<ShipType, number>;
-const ShipNumber = {
-    1: 'OneDeck',
-    2 : 'ThreeDeck',
-    3 : 'TwoDeck',
-    4 : 'FourDeck',
-} satisfies Record<number, ShipType>;
 
 
 
 export type Coordinates = {x: number, y: number};
 
-export type Cords = Record<string, boolean>;
+export type Cords = Record<string, Coordinates>;
 export default Field;
 
 
@@ -61,49 +53,50 @@ const isOppositeCellsReserved = (
 };
 
 const check = (
-    arr: Array<{checked: boolean, coordinates: Coordinates}>,
+    arr: Coordinates[],
     reservedCells: Cords,
-) => {
-    const toCheck = arr.find(c => !c.checked);
-    if (!toCheck) return;
-    const {x, y} = toCheck.coordinates;
+    currentCoords: Coordinates,
+): Coordinates[] => {
+    const checkedArr: Coordinates[] = [];
+    checkedArr.push(currentCoords);
     [
-        [x+1,y],
-        [x-1,y],
-        [x,y+1],
-        [x,y-1],
+        [currentCoords.x+1,currentCoords.y],
+        [currentCoords.x-1,currentCoords.y],
+        [currentCoords.x,currentCoords.y+1],
+        [currentCoords.x,currentCoords.y-1],
     ].forEach(([x, y]) => {
-        if (`${x}${y}` in reservedCells && !arr.some(({coordinates: {x: X, y: Y}}) => x === X && y === Y)) {
-            arr.push({ checked: false, coordinates: {x, y} });
+        if (`${x}${y}` in reservedCells) {
+            const index = arr.findIndex(({x: X, y:Y}) => x === X && y === Y);
+            if (index > -1) {
+                const c = arr.splice(index, 1)[0];
+                const res = check(arr, reservedCells, c);
+                checkedArr.push(...res);
+            }
         }
     });
-    toCheck.checked = true;
-    if (arr.some(c => !c.checked)) {
-        check(arr, reservedCells);
-    }
+    return checkedArr;
 };
-const getAdjacentReservedCellsLength = (
-    coordinates: Coordinates,
+const getAdjacentReservedCells = (
     reservedCells: Cords,
-    ): number => {
-    const reservedCoordinates: Array<{checked: boolean; coordinates: Coordinates}> = [
-        { checked: false, coordinates },
-    ];
-    check(reservedCoordinates, reservedCells);
-    console.log('cells checked', reservedCoordinates);
-    return reservedCoordinates.length;
+    ) => {
+    const reservedCoordinates: Array<Coordinates[]> = [];
+    const coordToCheck = Object.values(reservedCells);
+    while (coordToCheck.length) {
+        const c = coordToCheck.shift();
+        if (c) {
+            const r = check(coordToCheck, reservedCells, c);
+            reservedCoordinates.push(r);
+        }
+    }
 };
 function Field(): React.ReactElement {
 
     const [reservedCells, setReservedCells] = useState<Cords>({});
-    const [ships, setShips] = useState<ShipNumberType>({
-        OneDeck: 0,
-        ThreeDeck: 0,
-        TwoDeck: 0,
-        FourDeck: 0,
-    });
+    const [coordsFlat, setCoordsFlat] = useState<Coordinates[]>([]);
 
-
+    useEffect(() => {
+        getAdjacentReservedCells(reservedCells);
+    }, [reservedCells]);
     const handleSquareSelect = (coordinates: Coordinates) => {
 
         if (isOppositeCellsReserved(coordinates, reservedCells)) return;
@@ -113,11 +106,14 @@ function Field(): React.ReactElement {
             const newCoordinates = {...reservedCells};
             delete newCoordinates[xYCoordinatesString];
             setReservedCells(newCoordinates);
+            const coorIndex = coordsFlat.findIndex(({x, y}) => coordinates.x === x && coordinates.y === y);
+            setCoordsFlat(coordsFlat.toSpliced(coorIndex, 1));
         } else {
-            const cellsLength = getAdjacentReservedCellsLength(coordinates, reservedCells);
-            console.log({cellsLength, ships});
-            setReservedCells({...reservedCells, [xYCoordinatesString]: true});
+            // const shipsInCells = getAdjacentReservedCells(coordinates, reservedCells);
+            setReservedCells({...reservedCells, [xYCoordinatesString]: coordinates});
+            setCoordsFlat(coordsFlat.concat(coordinates));
         }
+
     };
 
     return <div className="field">
