@@ -1,4 +1,4 @@
-import {makeAutoObservable} from "mobx";
+import {makeObservable, observable} from "mobx";
 import {Cords} from "../../components/Player/LocalPlayer";
 
 type LocalPlayer = {
@@ -7,18 +7,30 @@ type LocalPlayer = {
     isBattleStarted: boolean;
 };
 
-export type Model = {
-    localPlayer: LocalPlayer;
-    remotePlayer: Record<string, string>;
+type RemotePlayer = {
+    isPlayerReady: boolean,
+    selectedCells: Cords,
+    cellState: Record<string, string>,
 };
 
-const model: Model = {
-    localPlayer: {
+class Model {
+    localPlayer: LocalPlayer = {
         selectedCells: {},
         isReadyToStart: false,
         isBattleStarted: false,
-    },
-    remotePlayer: {},
-};
+    };
+        remotePlayer: RemotePlayer = {
+        isPlayerReady: false,
+        selectedCells: {},
+        cellState: {}, // cellState: { [p: string]: 'affected' | 'checked' | undefined}
+    };
+    constructor() {
+        makeObservable(this, {
+            localPlayer: observable,
+            remotePlayer: observable,
+        });
+    }
+}
 
-export default makeAutoObservable(model);
+// export default makeAutoObservable(model);
+export default new Model();

@@ -7,11 +7,9 @@ import {action} from "mobx";
 const updateLocalSelectedCells = action((coordinates: Coordinates) => {
     const xYCoordinatesString = getXYCoordinatesString(coordinates);
     if (xYCoordinatesString in Model.localPlayer.selectedCells) {
-        const newCoordinates = {...Model.localPlayer.selectedCells};
-        delete newCoordinates[xYCoordinatesString];
-        Model.localPlayer.selectedCells = newCoordinates;
+        delete Model.localPlayer.selectedCells[xYCoordinatesString];
     } else {
-        Model.localPlayer.selectedCells = {...Model.localPlayer.selectedCells, [xYCoordinatesString]: coordinates};
+        Model.localPlayer.selectedCells[xYCoordinatesString] = coordinates;
     }
 });
 
