@@ -53,7 +53,7 @@ const LocalPlayer = observer(() => {
         <div>
             <button disabled={isBattleStarted || !isReadyToStart} onClick={handleStartClick}>Start</button>
         </div>
-        <Field onCellClick={handleCellSelect} selectedCells={getLocalSelectedCells()}/>
+        <Field onCellClick={handleCellSelect} selectedCells={selectedCells}/>
     </div>;
 });
 
