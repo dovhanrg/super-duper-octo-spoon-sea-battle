@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import Field from "./components/Field";
+import LocalPlayer from "./components/Player/LocalPlayer";
+import RemotePlayer from "./components/Player/RemotePlayer";
 
 function App() {
   return (
@@ -11,8 +12,8 @@ function App() {
         </p>
       </header>
       <div className="fieldsContainer">
-          <Field />
-          {/*<Field />*/}
+          <LocalPlayer />
+          <RemotePlayer />
       </div>
     </div>
   );

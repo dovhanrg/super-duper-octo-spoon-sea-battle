@@ -1,6 +1,6 @@
 import React, {useCallback} from "react";
 import FieldPure from "./FieldPure";
-import {getXYCoordinatesString} from "./helpers";
+import {getXYCoordinatesString} from "./helpers/getXYCoordinatesString";
 import Cell from "../Cell";
 import {Coordinates, SelectedCells} from "../Player/LocalPlayer";
 
