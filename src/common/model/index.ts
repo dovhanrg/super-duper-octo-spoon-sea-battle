@@ -1,10 +1,12 @@
-import {makeObservable, observable} from "mobx";
+import {makeObservable, observable, runInAction} from "mobx";
 import {Cords} from "../../components/Player/LocalPlayer";
+import {localState, seaBattleUserIDKey} from "../consts";
+import {MessageType, sendMessage} from "../socket";
 
 type LocalPlayer = {
     selectedCells: Cords;
-    isReadyToStart: boolean;
     isBattleStarted: boolean;
+    userID?: string;
 };
 
 type RemotePlayer = {
@@ -16,10 +18,9 @@ type RemotePlayer = {
 class Model {
     localPlayer: LocalPlayer = {
         selectedCells: {},
-        isReadyToStart: false,
         isBattleStarted: false,
     };
-        remotePlayer: RemotePlayer = {
+    remotePlayer: RemotePlayer = {
         isPlayerReady: false,
         selectedCells: {},
         cellState: {}, // cellState: { [p: string]: 'affected' | 'checked' | undefined}
@@ -29,8 +30,21 @@ class Model {
             localPlayer: observable,
             remotePlayer: observable,
         });
+        runInAction(() => {
+            const state = localStorage.getItem(localState);
+            const id = localStorage.getItem(seaBattleUserIDKey);
+            console.log('runInAction', state);
+            if (state) {
+                this.localPlayer = {
+                    ...JSON.parse(state),
+                };
+                sendMessage({type: 'init', id: this.localPlayer.userID, state: JSON.parse(state)});
+            } else {
+                const message = {type: 'init'} satisfies MessageType;
+                sendMessage(id ? {...message, id} : message);
+            }
+        });
     }
 }
 
-// export default makeAutoObservable(model);
 export default new Model();
