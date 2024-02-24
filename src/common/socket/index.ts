@@ -1,35 +1,47 @@
 import onReceive from "../model/actions/onReceive";
-import {messageType, REMOTE_ADDR, seaBattleUserIDKey} from "../consts";
+import {messageType, REMOTE_ADDR} from "../consts";
 
 const messages: MessageType[] = [];
 
-const userID = localStorage.getItem(seaBattleUserIDKey);
-console.log({userID});
-// TODO: try class for wrapper
-// const wrapper = {
-//     onSend: (message: SendMessageType) => {
-//         socket.send(JSON.stringify(message));
-//     },
-//     onMessage: (data: string) => {
-//
-//     },
-// };
-console.log(REMOTE_ADDR);
-const socket = new WebSocket('ws://localhost:8080/ws');
+let isConnected = false;
+let socket: WebSocket | null = null;
 
-console.log('socket.readyState', socket.readyState);
+function connect() {
+    socket = new WebSocket(REMOTE_ADDR);
+    socket.onopen = () => {
+        isConnected = true;
+        console.log("[open] Connection established", socket?.readyState, messages);
+        if (messages.length) {
+            messages.forEach((message) => sendMessage(message));
+        }
+    };
 
-socket.onopen = () => {
-    console.log("[open] Connection established", socket.readyState, messages);
-    if (messages.length) {
-        messages.forEach((message) => sendMessage(message));
-    }
-    // if (!userID) {
-    //     socket.send(JSON.stringify({type: 'init'}));
-    // } else {
-    //     socket.send(JSON.stringify({type: 'init', id: userID}));
-    // }
-};
+    socket.onmessage = (event) => {
+        console.log(`[message] Data received from server: ${event.data}`);
+        onReceive(event.data);
+    };
+
+
+    socket.onclose = (event) => {
+        isConnected = false;
+        if (event.wasClean) {
+            console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+        } else {
+            // e.g. server process killed or network down
+            // event.code is usually 1006 in this case
+            console.log('[close] Connection died');
+            connect();
+        }
+    };
+
+    socket.onerror = (error) => {
+        console.log(`[error]`, error);
+        // wrapper.onError();
+    };
+}
+
+connect();
+
 
 export type MessageType = {
     type: keyof typeof messageType;
@@ -37,30 +49,20 @@ export type MessageType = {
 };
 
 export const sendMessage = (message: MessageType) => {
-    console.log('trying to send message: ', socket.readyState, message);
-    if (socket.readyState !== 1) {
-        messages.push(message);
-    } else {
+    console.log('trying to send message: ', socket?.readyState, message);
+    if (socket && socket.readyState === 1) {
         socket.send(JSON.stringify(message));
-    }
-};
-
-socket.onmessage = (event) => {
-    console.log(`[message] Data received from server: ${event.data}`);
-    onReceive(event.data);
-};
-socket.onclose = (event) => {
-    if (event.wasClean) {
-        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
     } else {
-        // e.g. server process killed or network down
-        // event.code is usually 1006 in this case
-        console.log('[close] Connection died');
+        messages.push(message);
     }
-    // wrapper.onClose();
 };
 
-socket.onerror = (error) => {
-    console.log(`[error]`, error);
-    // wrapper.onError();
-};
+const pingPong = () => {
+    setInterval(() => {
+        if (isConnected) {
+            sendMessage({type: 'ping'});
+        }
+    }, 5000);
+}
+
+pingPong();

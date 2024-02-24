@@ -2,4 +2,4 @@
  *
  * @type {{[id:string]: {}}}
  */
-export const state = {};
+export let state = {};

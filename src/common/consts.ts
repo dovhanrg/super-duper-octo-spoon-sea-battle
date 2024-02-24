@@ -5,6 +5,7 @@ export enum messageType {
     init_resp = 'init_resp',
     playerStarted = 'playerStarted',
     playerStarted_resp = 'playerStarted_resp',
+    ping = 'ping',
 }
 
 

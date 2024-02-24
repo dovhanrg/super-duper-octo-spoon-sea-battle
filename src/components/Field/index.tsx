@@ -26,13 +26,6 @@ const Field = ({onCellClick, selectedCells}: Props): React.ReactElement => {
         }
     }
 
-    const a = new Array(SEA_BATTLE_FIELD_LENGTH).fill(null).reduce((acc, _, index) => {
-        return acc.concat(new Array(SEA_BATTLE_FIELD_LENGTH).fill(null).map((_, innerIndex) => {
-            return {x: innerIndex+1, y: index+1};
-        }));
-    }, []);
-    console.log(a);
-
     return (<FieldPure>{cells}</FieldPure>);
 };
 

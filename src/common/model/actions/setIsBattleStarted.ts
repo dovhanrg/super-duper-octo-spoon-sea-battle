@@ -7,7 +7,11 @@ import {sendMessage} from "../../socket";
 const setIsBattleStarted = action(() => {
     Model.localPlayer.isBattleStarted = true;
     localStorage.setItem(localState, JSON.stringify(Model.localPlayer));
-    sendMessage({type: messageType.playerStarted});
+    sendMessage({
+        type: messageType.playerStarted,
+        id: Model.localPlayer.userID,
+        state: JSON.stringify(Model.localPlayer)
+    });
 });
 
 export default setIsBattleStarted;
