@@ -1,5 +1,8 @@
-/**
- *
- * @type {{[id:string]: {}}}
- */
-export let state = {};
+
+let state = {};
+
+export const updateState = (newState) => {
+    state = newState;
+}
+
+export const getState = () => state;

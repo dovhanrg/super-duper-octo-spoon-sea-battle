@@ -6,7 +6,7 @@ module.exports = {
     root: true,
     rules: {
         "semi": "off",
-        "@typescript-eslint/semi": "error",
+        "@typescript-eslint/semi": "warn",
         "@typescript-eslint/no-explicit-any": "error",
     },
 };

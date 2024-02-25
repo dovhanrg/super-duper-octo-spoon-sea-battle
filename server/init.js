@@ -1,9 +1,11 @@
-import {state} from "./state.js";
+
 import {randomUUID} from "node:crypto";
+import {readStateFromFile, writeStateToFile} from "./file.js";
+import {getState} from "./state.js";
 
-
-export const init = (ws, obj) => {
-    console.log('init request received: ', obj);
+export const init = async (ws, obj) => {
+    await readStateFromFile();
+    const state = getState();
     if ('id' in obj && obj.id in state) {
         state[obj.id] = {
             ...state[obj.id],
@@ -29,5 +31,5 @@ export const init = (ws, obj) => {
             message: 'initialised session id'
         }));
     }
-    console.log(state);
+    await writeStateToFile(state);
 }
