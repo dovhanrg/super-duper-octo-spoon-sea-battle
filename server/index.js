@@ -24,7 +24,6 @@ app.get('/ws', (req, res) => {
 });
 
 function onConnect(ws, req) {
-    console.log(req.headers.cookie);
     ws.on('message', function (message) {
         try {
             const obj = JSON.parse(message);

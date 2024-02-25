@@ -12,8 +12,9 @@ export const writeStateToFile = async (data) => {
 export const readStateFromFile = async () => {
     try {
         const buff = await fs.readFile('state.json');
-        console.log(buff.toString());
-        updateState(JSON.parse(buff.toString()));
+        if (buff.length) {
+            updateState(JSON.parse(buff.toString()));
+        }
     } catch (e) {
         console.log(e);
     }
