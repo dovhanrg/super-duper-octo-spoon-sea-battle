@@ -11,8 +11,12 @@ function connect() {
     socket.onopen = () => {
         isConnected = true;
         console.log("[open] Connection established", socket?.readyState, messages);
-        if (messages.length) {
-            messages.forEach((message) => sendMessage(message));
+
+        while (messages.length) {
+            const message = messages.shift();
+            if (message) {
+                sendMessage(message);
+            }
         }
     };
 
