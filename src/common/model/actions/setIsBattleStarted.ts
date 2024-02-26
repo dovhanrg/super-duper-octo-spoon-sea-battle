@@ -5,12 +5,12 @@ import {sendMessage} from "../../socket";
 
 
 const setIsBattleStarted = action(() => {
-    Model.localPlayer.isBattleStarted = true;
+    Model.localPlayer.isPlayerReady = true;
     localStorage.setItem(localState, JSON.stringify(Model.localPlayer));
     sendMessage({
-        type: messageType.playerStarted,
-        id: Model.localPlayer.userID,
-        state: JSON.stringify(Model.localPlayer)
+        type: messageType.playerReady,
+        id: Model.localPlayer.id,
+        state: Model.localPlayer,
     });
 });
 

@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import {getState, updateState} from "./state.js";
 
-export const writeStateToFile = async (data) => {
+export const writeStateToFile = async () => {
     try {
-        await fs.writeFile('state.json', JSON.stringify({...getState(), ...data}, null, 2));
+        await fs.writeFile('state.json', JSON.stringify(getState(), null, 2));
     } catch (e) {
         console.log(e);
     }

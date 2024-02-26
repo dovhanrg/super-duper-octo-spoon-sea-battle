@@ -5,7 +5,7 @@ type ShipNumber = Record<string, number>;
 
 const shipsExactNumber: ShipNumber = {1: 4, 2: 3, 3: 2, 4: 1};
 
-const getIsReadyToStart = (): boolean => {
+const getIsShipsArranged = (): boolean => {
     const shipsWithCoordinates = getAdjacentReservedCells(getLocalSelectedCells());
     const ships = shipsWithCoordinates.reduce((acc, coordsArr) => {
         const dockCount = coordsArr.length;
@@ -18,4 +18,4 @@ const getIsReadyToStart = (): boolean => {
     });
 };
 
-export default getIsReadyToStart;
+export default getIsShipsArranged;

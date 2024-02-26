@@ -5,8 +5,8 @@ import {MessageType, sendMessage} from "../socket";
 
 type LocalPlayer = {
     selectedCells: Cords;
-    isBattleStarted: boolean;
-    userID?: string;
+    isPlayerReady: boolean;
+    id?: string;
 };
 
 type RemotePlayer = {
@@ -18,7 +18,7 @@ type RemotePlayer = {
 class Model {
     localPlayer: LocalPlayer = {
         selectedCells: {},
-        isBattleStarted: false,
+        isPlayerReady: false,
     };
     remotePlayer: RemotePlayer = {
         isPlayerReady: false,
@@ -33,12 +33,11 @@ class Model {
         runInAction(() => {
             const state = localStorage.getItem(localState);
             const id = localStorage.getItem(seaBattleUserIDKey);
-            console.log('runInAction', state);
             if (state) {
                 this.localPlayer = {
                     ...JSON.parse(state),
                 };
-                sendMessage({type: 'init', id: this.localPlayer.userID, state: JSON.parse(state)});
+                sendMessage({type: 'init', id: this.localPlayer.id, state: JSON.parse(state)});
             } else {
                 const message = {type: 'init'} satisfies MessageType;
                 sendMessage(id ? {...message, id} : message);

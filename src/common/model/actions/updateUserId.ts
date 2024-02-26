@@ -6,7 +6,7 @@ import {seaBattleUserIDKey} from "../../consts";
 
 const updateUserId = action((data: MessageType) => {
     if (typeof data.id === 'string') {
-        Model.localPlayer.userID = data.id;
+        Model.localPlayer.id = data.id;
         localStorage.setItem(seaBattleUserIDKey, data.id.toString());
     }
 });

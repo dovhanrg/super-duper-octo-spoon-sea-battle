@@ -3,8 +3,8 @@
 export enum messageType {
     init = 'init',
     init_resp = 'init_resp',
-    playerStarted = 'playerStarted',
-    playerStarted_resp = 'playerStarted_resp',
+    playerReady = 'playerReady',
+    playerReady_resp = 'playerReady_resp',
     ping = 'ping',
 }
 

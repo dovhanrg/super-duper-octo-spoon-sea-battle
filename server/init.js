@@ -4,14 +4,13 @@ import {getState} from "./state.js";
 
 /**
  *
- * @param {WebSocket} ws WebSocket object
+ * @param {WebSocket} ws WebSocket
  * @param obj
  * @param {type} obj.type incoming message type
- * @param {id} obj.id  user id
+ * @param {id} [obj.id]  user id
  * @param {state} [obj.state] user state
  * @param {selectedCells} [obj.state.selectedCells] location of user ships on field
- * @param {isBattleStarted} [obj.state.isBattleStarted=boolean] is user located ships and press Start(ready)
- * @param {userID} [obj.state.userID] user id from localStorage
+ * @param {isPlayerReady} [obj.state.isPlayerReady=boolean] is user located ships and press Start(ready)
  * @return void
  */
 export const init = async (ws, obj) => {
@@ -21,7 +20,7 @@ export const init = async (ws, obj) => {
     if (id && id in state) {
         state[id] = {
             ...state[id],
-            isBattleStarted: userState?.isBattleStarted ?? false,
+            isPlayerReady: userState?.isPlayerReady ?? false,
             selectedCells: userState?.selectedCells ?? {},
         };
         ws.send(JSON.stringify({
@@ -41,5 +40,5 @@ export const init = async (ws, obj) => {
             message: 'initialised session id'
         }));
     }
-    await writeStateToFile(state);
+    await writeStateToFile();
 }

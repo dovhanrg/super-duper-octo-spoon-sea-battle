@@ -2,8 +2,8 @@ import Field from "../Field";
 import {observer} from "mobx-react-lite";
 import updateLocalSelectedCells from "../../common/model/actions/updateLocalSelectedCells";
 import getLocalSelectedCells from "../../common/model/selectors/getLocalSelectedCells";
-import getIsReadyToStart from "../../common/model/selectors/getIsReadyToStart";
-import getIsBattleStarted from "../../common/model/selectors/getIsBattleStarted";
+import getIsShipsArranged from "../../common/model/selectors/getIsShipsArranged";
+import getIsPlayerReady from "../../common/model/selectors/getIsPlayerReady";
 import setIsBattleStarted from "../../common/model/actions/setIsBattleStarted";
 
 
@@ -31,16 +31,16 @@ const isOppositeCellsReserved = (
 const LocalPlayer = observer(() => {
 
     const selectedCells = getLocalSelectedCells();
-    const isReadyToStart = getIsReadyToStart();
-    const isBattleStarted = getIsBattleStarted();
+    const isShipsArranged = getIsShipsArranged();
+    const isPlayerReady = getIsPlayerReady();
 
     const handleCellSelect = (coordinates: Coordinates) => {
-        if (isOppositeCellsReserved(coordinates, selectedCells) || isBattleStarted) return;
+        if (isOppositeCellsReserved(coordinates, selectedCells) || isPlayerReady) return;
         updateLocalSelectedCells(coordinates);
     };
 
     const handleStartClick = () => {
-        if (isReadyToStart && !isBattleStarted) setIsBattleStarted();
+        if (isShipsArranged && !isPlayerReady) setIsBattleStarted();
     };
 
     return <div>
@@ -49,9 +49,9 @@ const LocalPlayer = observer(() => {
         <p>Two dock ships: 3</p>
         <p>Three dock ships: 2</p>
         <p>Four dock ships: 1</p>
-        <div><p>Is ready to start: {isReadyToStart ? <span>Ready</span> : <span>Not Ready</span>}</p></div>
+        <div><p>Is ready to start: {isShipsArranged ? <span>Ready</span> : <span>Not Ready</span>}</p></div>
         <div>
-            <button disabled={isBattleStarted || !isReadyToStart} onClick={handleStartClick}>Start</button>
+            <button disabled={isPlayerReady || !isShipsArranged} onClick={handleStartClick}>Ready</button>
         </div>
         <Field onCellClick={handleCellSelect} selectedCells={selectedCells}/>
     </div>;
